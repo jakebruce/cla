@@ -55,9 +55,15 @@ static timestamp_t get_timestamp()
 int main(int argc, char* argv[])
 {
     char* savefile = 0;
+    char* loadfile = 0;
 
     for (int i = 0; i < argc; ++i)
     {
+        if (string("--load").compare(argv[i])==0)
+        {
+            loadfile = argv[i+1];
+        }
+
         if (string("--input_size").compare(argv[i])==0)
         {
             INPUT_SIZE = atoi(argv[i+1]);
@@ -98,7 +104,7 @@ int main(int argc, char* argv[])
             SLIDING_RATE = atoi(argv[i+1]);
         }
         
-        if (string("--anomaly_anomalywindow").compare(argv[i])==0)
+        if (string("--window_size").compare(argv[i])==0)
         {
             MOVING_AVERAGE_WINDOW = atoi(argv[i+1]);
         }
@@ -177,6 +183,32 @@ int main(int argc, char* argv[])
         {
             ALTERNATING = true;
         }
+
+        if (string("--help").compare(argv[i])==0
+                or string("-h").compare(argv[i])==0)
+        {
+            cout << "usage: " << argv[0] << " [options]" << endl
+                << "options: " << endl
+                << "--load <file: one integer from 0 to 255 per line>" << endl
+                << "--columns <number of cortical columns> [def: 512]" << endl
+                << "--columns_depth <cells per column> [def: 8]" << endl
+                << "--learning_positive <pos reinforce rate> [def: 10]" << endl
+                << "--learning_negative <neg reinforce rate> [def: 15]" << endl
+                << "--distal_segments <num> [def: 128]" << endl
+                << "--distal_size <synapses per segment> [def: 32]" << endl
+                << "--proximal_size <synapses per segment> [def: 128]" << endl
+                << "--sdr_density <percentage of columns to activate> [def: 0.02]" << endl
+                << "--save <file: save running stats to this prefix>" << endl
+                << "--region_viz [show the region state]" << endl
+                << "--output_viz [show the output to a higher region]" << endl
+                << "--prediction_viz [show the expected next input" << endl
+                << "--active_viz [show just the columns that are active]" << endl
+                << "--stable_viz [show the network's response to a stable input]" << endl
+                << "--input_viz [show the SDR of each input]" << endl
+                << "--step [wait for enter key between steps]" << endl
+                << "--column_viz <column index, be careful>" << endl;
+            return 0;
+        }
     }
 
     ofstream anomalyfile;
@@ -185,6 +217,7 @@ int main(int argc, char* argv[])
     ofstream actualfile;
     ofstream predictedfile;
 
+    ifstream infile;
 
     printf("Testing the Cortex. Here we go!\n");
     printf("==========BUILDING CORTEX==========\n");
