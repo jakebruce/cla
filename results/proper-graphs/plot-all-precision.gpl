@@ -1,0 +1,6 @@
+set terminal postscript eps enhanced color "Helvetica" 15
+set title "Precision"
+set xlabel "Input Step"
+set ylabel "Precision"
+set output "all-precision.eps"
+plot "trim-10-10-precision" w l t "LP:10, LN:10", "trim-10-15-precision" w l t "LP:10, LN:15", "trim-5-5-precision" w l t "LP:5, LN:5"

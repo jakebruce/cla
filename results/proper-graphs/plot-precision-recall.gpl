@@ -1,0 +1,6 @@
+set terminal postscript eps enhanced color "Helvetica" 15
+set title "Precision / Recall Curve"
+set ylabel "Precision"
+set xlabel "Recall"
+set output "all-precision-recall.eps"
+plot "all-precision-recall" w lp t "Precision / Recall"

@@ -1,0 +1,6 @@
+set terminal postscript eps enhanced color "Helvetica" 15
+set title "Recall - LP:5 LN:5"
+set xlabel "Input Step"
+set ylabel "Recall"
+set output "5-5-recall.eps"
+plot "trim-5-5-recall" w l

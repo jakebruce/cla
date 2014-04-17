@@ -1,0 +1,6 @@
+set terminal postscript eps enhanced color "Helvetica" 15
+set title "Anomaly Score"
+set xlabel "Input Step"
+set ylabel "Anomaly Score"
+set output "all-anomaly.eps"
+plot "trim-10-10-anomaly" w l t "LP:10, LN:10", "trim-10-15-anomaly" w l t "LP:10, LN:15", "trim-5-5-anomaly" w l t "LP:5, LN:5"

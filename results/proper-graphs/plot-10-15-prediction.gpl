@@ -1,0 +1,6 @@
+set terminal postscript eps enhanced color "Helvetica" 15
+set title "Prediction - LP:10 LN:15"
+set xlabel "Input Step"
+set ylabel "Input Class"
+set output "10-15-prediction.eps"
+plot "trim-10-15-actual_input" w l t "Actual Input", "trim-10-15-predicted_input" w l t "Predicted Input"

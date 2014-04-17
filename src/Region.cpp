@@ -223,7 +223,7 @@ namespace CLA
     float Region::calculate_precision()
     {
         float active = 0;
-        float predicted = 0;
+        float predicted = 1;
         for (unsigned int i = 0; i < columns.size(); ++i)
         {
             if (columns[i]->predictive_state)
@@ -247,7 +247,7 @@ namespace CLA
                 predicted += 1.0;
         }
 
-        return predicted / active_column_indices.size();
+        return predicted / (active_column_indices.size()+1);
     }
 
     float Region::update_state()

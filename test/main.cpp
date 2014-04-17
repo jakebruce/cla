@@ -224,11 +224,11 @@ int main(int argc, char* argv[])
 
     float precisionwindow[MOVING_AVERAGE_WINDOW];
     for (int i = 0; i < MOVING_AVERAGE_WINDOW; ++i)
-        precisionwindow[i] = 1.0;
+        precisionwindow[i] = 0.0;
 
     float recallwindow[MOVING_AVERAGE_WINDOW];
     for (int i = 0; i < MOVING_AVERAGE_WINDOW; ++i)
-        recallwindow[i] = 1.0;
+        recallwindow[i] = 0.0;
 
     if (savefile)
     {
@@ -298,7 +298,7 @@ int main(int argc, char* argv[])
                     if ((i+1) % int(sqrt(INPUT_SIZE)*1.5) == 0)
                         printf("\n");
                 }
-                printf("================\n");
+                printf("\n================\n");
                 printf("\n");
             }
 
@@ -323,7 +323,7 @@ int main(int argc, char* argv[])
                     if ((i+1)%int(sqrt(INPUT_SIZE)*1.5)==0)
                         printf("\n");
                 }
-                printf("================\n");
+                printf("\n================\n");
                 printf("\n");
             }
 
@@ -380,9 +380,8 @@ int main(int argc, char* argv[])
                     break;
             }
 
-            char dummy;
             if (STEP)
-                cin >> &dummy;
+                cin.ignore();
         }
     }
     if (savefile)
