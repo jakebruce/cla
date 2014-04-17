@@ -1,4 +1,4 @@
-set terminal png font "Helvetica" 15
+set terminal png font "Helvetica" 10
 set title "Precision"
 set xlabel "Input Step"
 set ylabel "Precision"
