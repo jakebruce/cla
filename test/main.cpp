@@ -216,6 +216,7 @@ int main(int argc, char* argv[])
     ofstream recallfile;
     ofstream actualfile;
     ofstream predictedfile;
+    ofstream timefile;
 
     ifstream infile;
 
@@ -270,6 +271,7 @@ int main(int argc, char* argv[])
         recallfile.open((string(savefile)+".recall").c_str());
         actualfile.open((string(savefile)+".actual_input").c_str());
         predictedfile.open((string(savefile)+".predicted_input").c_str());
+        timefile.open((string(savefile)+".time").c_str());
     }
 
     char stable_chars[512] = {
@@ -401,6 +403,9 @@ int main(int argc, char* argv[])
                     << " " << actual_input_class << endl;
                 predictedfile << cycle 
                     << " " << predicted_input_class << endl;
+
+                timefile << cycle
+                    << " " << ms << endl;
             }
 
             cycle++;
@@ -424,6 +429,7 @@ int main(int argc, char* argv[])
         recallfile.close();
         actualfile.close();
         predictedfile.close();
+        timefile.close();
     }
     return 0;
 }
