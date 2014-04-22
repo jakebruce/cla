@@ -242,6 +242,7 @@ int main(int argc, char* argv[])
         DISTAL_SEGMENT_SIZE,
         DISTAL_SEGMENTS,
         SDR_DENSITY,
+        PREDICTION_MODE,
         COLUMN_VIZ,
         REGION_VIZ,
         OUTPUT_VIZ,

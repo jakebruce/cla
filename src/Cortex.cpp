@@ -18,6 +18,7 @@ namespace CLA
             int distal_segment_size,
             int distal_segments,
             float sdr_density,
+            int prediction_mode,
             int column_viz,
             bool region_viz,
             bool output_viz,
@@ -35,6 +36,8 @@ namespace CLA
         CFG::DISTAL_SEGMENTS = distal_segments;
 
         CFG::DESIRED_SDR_DENSITY = sdr_density;
+
+        CFG::PREDICTION_MODE = prediction_mode;
 
         CFG::COLUMN_VIZ = column_viz;
         CFG::REGION_VIZ = region_viz;

@@ -30,6 +30,7 @@ namespace CLA
                 int distal_segment_size,
                 int distal_segments,
                 float sdr_density,
+                int prediction_mode,
                 int column_viz,
                 bool output_viz,
                 bool region_viz,
