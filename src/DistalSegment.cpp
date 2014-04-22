@@ -67,7 +67,9 @@ namespace CLA
                 current = v[j];
             }
 
-            count++;
+            if (current != -1)
+                count++;
+
             if (count > best_count)
             {
                 best = current;
