@@ -102,6 +102,7 @@ namespace CLA
             void update_overlap_duty(char did_overlap);
             void update_active_duty(char was_active);
             void update_input_history(int input_pattern_index);
+            void calculate_input_vote();
 
             void _init_fields();
     };

@@ -15,6 +15,13 @@ namespace CLA
         learn_state = false;
 
         _prediction_level = 0;
+
+        _input_history_cursor = 0;
+        _input_history = new int[CFG::INPUT_HISTORY];
+        most_likely_input = -1;
+        
+        for (int i = 0; i < CFG::INPUT_HISTORY; ++i)
+            _input_history[i] = -1;
     }
 
     Cell::Cell(vector<Cell*>& neighborhood_cells, 
@@ -37,6 +44,7 @@ namespace CLA
     
     Cell::~Cell() 
     {
+        delete _input_history;
         for (unsigned int i = 0; i < distal_segments.size(); ++i)
             delete distal_segments[i];
     }
@@ -56,6 +64,62 @@ namespace CLA
                         active_column_count/2, 
                         input_space_location));
         }
+    }
+
+    int _cell_winning_vote(vector<int>& v)
+    {
+        int count = 0;
+        int current = -1;
+        int best = -1;
+        int best_count = 0;
+
+        sort(v.begin(), v.end());
+
+        for (unsigned int i = 0; i < v.size(); ++i)
+        {
+            if (v[i] != current and v[i] != -1)
+            {
+                count = 0;
+                current = v[i];
+            }
+
+            count++;
+            if (count > best_count)
+            {
+                best = current;
+                best_count = count;
+            }
+        }
+
+        return best;
+    }
+
+    void Cell::calculate_input_vote()
+    {
+        if (CFG::PREDICTION_MODE == 1)
+        {
+            // Cell prediction
+            vector<int> v;
+            for (int i = 0; i < CFG::INPUT_HISTORY; ++i)
+                v.push_back(_input_history[i]);
+
+            most_likely_input = _cell_winning_vote(v);
+        }
+        else if (CFG::PREDICTION_MODE == 2)
+        {
+            // DistalSegment prediction
+            vector<int> v;
+            for (unsigned int i = 0; i < _active_segments.size(); ++i)
+                v.push_back(distal_segments[_active_segments[i]]->calculate_input_vote());
+
+            most_likely_input = _cell_winning_vote(v);           
+        }
+    }
+
+    void Cell::update_input_history(int pattern_index)
+    {
+        _input_history[_input_history_cursor] = pattern_index;
+        _input_history_cursor = (_input_history_cursor+1) % CFG::INPUT_HISTORY;
     }
 
     void Cell::update_input()
@@ -113,13 +177,15 @@ namespace CLA
         return pbest;
     }
 
-    void Cell::update_state(char fire, char learn, vector<Cell*>& active_cells)
+    void Cell::update_state(char fire, char learn, vector<Cell*>& active_cells, int pattern_index)
     {
         learn_state = learn;
         active_state = fire;
 
         if (active_state && learn_state)
         {
+            update_input_history(pattern_index);
+
             DistalSegment* pbest = get_best_segment();
             if (pbest != 0)
             {
@@ -136,6 +202,11 @@ namespace CLA
             if (predictive_state and active_state)
             {
                 distal_segments[_active_segments[i]]->learn(true);
+
+                int idx = _input_history_cursor - 1;
+                if (idx < 0)
+                    idx = CFG::INPUT_HISTORY - 1;
+                distal_segments[_active_segments[i]]->update_input_history(_input_history[idx]);
             }
             if (predictive_state and not active_state)
             {
@@ -156,6 +227,8 @@ namespace CLA
         _prediction_level = calculate_prediction_potential();
 
         predictive_state = any_segments_active();
+
+        calculate_input_vote();
 
         axon = active_state;// or predictive_state;
     }

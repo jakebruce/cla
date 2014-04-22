@@ -32,6 +32,8 @@ int PROXIMAL_SEGMENT_SIZE = 128;
 
 float SDR_DENSITY = 0.02;
 
+int PREDICTION_MODE = 2;
+
 int COLUMN_VIZ = -1;
 bool INPUT_VIZ = false;
 bool REGION_VIZ = false;
@@ -59,6 +61,11 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < argc; ++i)
     {
+        if (string("--prediction_mode").compare(argv[i])==0)
+        {
+            PREDICTION_MODE = atoi(argv[i+1]);
+        }
+
         if (string("--load").compare(argv[i])==0)
         {
             loadfile = argv[i+1];
@@ -199,6 +206,7 @@ int main(int argc, char* argv[])
                 << "--proximal_size <synapses per segment> [def: 128]" << endl
                 << "--sdr_density <percentage of columns to activate> [def: 0.02]" << endl
                 << "--save <file: save running stats to this prefix>" << endl
+                << "--prediction_mode < 0:Column | 1:Cell | 2:DistalSegment >" << endl
                 << "--region_viz [show the region state]" << endl
                 << "--output_viz [show the output to a higher region]" << endl
                 << "--prediction_viz [show the expected next input" << endl

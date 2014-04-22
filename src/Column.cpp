@@ -127,25 +127,23 @@ namespace CLA
     {
         _input_history[_input_history_cursor] = input_pattern_index;
         _input_history_cursor = (_input_history_cursor+1) % CFG::INPUT_HISTORY;
+    }
 
-        vector<int> tmp_history;
-        for (int i = 0; i < min(CFG::INPUT_HISTORY, active_cycles); ++i)
-        {
-            tmp_history.push_back(_input_history[i]);
-        }
-        sort(tmp_history.begin(), tmp_history.end());
-
+    int calculate_winning_vote(vector<int>& v)
+    {
         int count = 0;
         int current = -1;
         int best = -1;
         int best_count = 0;
 
-        for (unsigned int j = 0; j < tmp_history.size(); ++j)
+        sort(v.begin(), v.end());
+
+        for (unsigned int j = 0; j < v.size(); ++j)
         {
-            if (tmp_history[j] != current and tmp_history[j] != -1)
+            if (v[j] != current and v[j] != -1)
             {
                 count = 0;
-                current = tmp_history[j];
+                current = v[j];
             }
 
             count++;
@@ -156,7 +154,28 @@ namespace CLA
             }
         }
 
-        most_likely_pattern = best;
+        return best;
+    }
+
+    void Column::calculate_input_vote()
+    {
+        if (CFG::PREDICTION_MODE == 0)
+        {
+            vector<int> tmp_history;
+            for (int i = 0; i < min(CFG::INPUT_HISTORY, active_cycles); ++i)
+                tmp_history.push_back(_input_history[i]);
+
+            most_likely_pattern = calculate_winning_vote(tmp_history);
+        }
+        else
+        {
+            vector<int> cell_votes;
+            for (unsigned int i = 0; i < cells.size(); ++i)
+                if (cells[i]->predictive_state)
+                    cell_votes.push_back(cells[i]->most_likely_input);
+
+            most_likely_pattern = calculate_winning_vote(cell_votes);
+        }
     }
 
     int Column::get_potential()
@@ -253,25 +272,32 @@ namespace CLA
 
         for (unsigned int i = 0; i < cells.size(); ++i)
         {
+            char fire_state = false;
+            char learn_state = false;
+
             if (active_state)
             {
                 // if some cells were predicted
                 if (predictive_state)
                 {
-                    char cell_predicted = cells[i]->predictive_state;
-                    cells[i]->update_state(cell_predicted, cell_predicted, active_cells);
+                    fire_state = cells[i]->predictive_state;;
+                    learn_state = fire_state;
                 }
                 // bursting
                 else
                 {
-                    cells[i]->update_state((char)true, (char)(cells[i]==strongest_predictor), active_cells);
+                    fire_state = true;
+                    learn_state = (cells[i]==strongest_predictor);
                 }
             }
             // just set all cells inactive
             else
             {
-                cells[i]->update_state((char)false, (char)false, active_cells);
+                fire_state = false;
+                learn_state = false;
             }
+
+            cells[i]->update_state(fire_state, learn_state, active_cells, input_pattern_index);
         }
     }
 
@@ -288,6 +314,8 @@ namespace CLA
                 set_predictive_state(true);
             }
         }
+
+        calculate_input_vote();
     }
 
     void Column::set_active_state(char s)

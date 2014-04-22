@@ -62,6 +62,12 @@ namespace CLA
 
           static char DEBUG;
 
+          /* 0 column prediction
+           * 1 cell prediction
+           * 2 distalsegment prediction
+           */
+          static int PREDICTION_MODE;
+
           static int COLUMN_VIZ;
           static bool REGION_VIZ;
           static bool ACTIVE_VIZ;

@@ -35,6 +35,12 @@ namespace CLA
 
     char CFG::DEBUG = true;
 
+    /* 0 Column prediction
+     * 1 Cell prediction
+     * 2 DistalSegment prediction
+     */
+    int CFG::PREDICTION_MODE = 0;
+
     int CFG::COLUMN_VIZ = -1;
     bool CFG::REGION_VIZ = false;
     bool CFG::OUTPUT_VIZ = false;

@@ -31,12 +31,18 @@ namespace CLA
             int get_potential();
             bool is_learned();
 
+            void update_input_history(int pattern_index);
+            int calculate_input_vote();
+
             // flag indicating whether this synapse should be forgotten
             char dead;
         protected:
             std::vector<Cell*> potential_synapses;
             char learned;
             int threshold;
+
+            int _input_history_cursor;
+            int* _input_history;
     };
 
 }

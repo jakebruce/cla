@@ -38,9 +38,11 @@ namespace CLA
             // this is called to reset the cell on each time step
             void update_input();
 
+            void update_input_history(int pattern_index);
+
             // can't update on input for a cell (they share a column's prox_seg)
             // but we still have to do temporal prediction step after feedforward
-            void update_state(char fire, char learn, std::vector<Cell*>& active_cells);
+            void update_state(char fire, char learn, std::vector<Cell*>& active_cells, int pattern_index);
 
             // make the prediction for next step. This should be done last.
             void update_prediction(std::vector<Cell*>& active_cells, std::vector<Cell*>& neighborhood_cells);
@@ -60,6 +62,8 @@ namespace CLA
             char learn_state;
 
             void print_string();
+
+            int most_likely_input;
         protected:
             ProximalSegment* proximal_segment;
             std::vector<DistalSegment*> distal_segments;
@@ -73,6 +77,11 @@ namespace CLA
 
             int _prediction_level;
             int _active_column_count;
+
+            int* _input_history;
+            int _input_history_cursor;
+
+            void calculate_input_vote();
 
             std::vector<int> _active_segments;
     };

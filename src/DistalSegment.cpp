@@ -1,5 +1,6 @@
 #include "CLA.h"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -33,9 +34,58 @@ namespace CLA
         dead = false;
         learned = false;
         threshold = thresh;
+
+        _input_history_cursor = 0;
+        _input_history = new int[CFG::INPUT_HISTORY];
+
+        for (int i = 0; i < CFG::INPUT_HISTORY; ++i)
+            _input_history[i] = -1;
     }
     
     DistalSegment::~DistalSegment() {}
+
+    void DistalSegment::update_input_history(int pattern_index)
+    {
+        _input_history[_input_history_cursor] = pattern_index;
+        _input_history_cursor = (_input_history_cursor+1) % CFG::INPUT_HISTORY;
+    }
+
+    int _segment_winning_vote(vector<int>& v)
+    {
+        int count = 0;
+        int current = -1;
+        int best = -1;
+        int best_count = 0;
+
+        sort(v.begin(), v.end());
+
+        for (unsigned int j = 0; j < v.size(); ++j)
+        {
+            if (v[j] != current and v[j] != -1)
+            {
+                count = 0;
+                current = v[j];
+            }
+
+            count++;
+            if (count > best_count)
+            {
+                best = current;
+                best_count = count;
+            }
+        }
+
+        return best;
+    }
+
+    int DistalSegment::calculate_input_vote()
+    {
+        vector<int> v;
+        for (int i = 0; i < CFG::INPUT_HISTORY; ++i)
+            v.push_back(_input_history[i]);
+
+        return _segment_winning_vote(v);
+    }
 
     char DistalSegment::get_state()
     {
